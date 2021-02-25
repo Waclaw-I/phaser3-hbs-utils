@@ -1,5 +1,5 @@
 {
-  "name": "phaser3-plugins",
+  "name": "phaser3-hbs-utils",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Waclaw-I/phaser3-plugins.git"
+    "url": "git+https://github.com/Waclaw-I/phaser3-hbs-utils"
   },
   "author": "Waclaw I",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Waclaw-I/phaser3-plugins/issues"
+    "url": "https://github.com/Waclaw-I/phaser3-hbs-utils/issues"
   },
-  "homepage": "https://github.com/Waclaw-I/phaser3-plugins#readme",
+  "homepage": "https://github.com/Waclaw-I/phaser3-hbs-utils#readme",
   "dependencies": {
     "phaser": "^3.52.0"
   },
