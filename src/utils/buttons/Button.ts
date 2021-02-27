@@ -5,5 +5,7 @@ export class Button extends Phaser.GameObjects.Image {
         super(scene, x, y, key, frame);
 
         this.setInteractive();
+
+        this.scene.add.existing(this);
     }
 }

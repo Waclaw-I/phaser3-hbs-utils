@@ -1,4 +1,6 @@
 import Phaser from 'phaser'
+import { Button } from '../../utils/buttons/Button'
+import { InputEvent } from '../../utils/types/input'
 
 export default class HelloWorldScene extends Phaser.Scene
 {
@@ -20,20 +22,10 @@ export default class HelloWorldScene extends Phaser.Scene
     {
         this.add.image(400, 300, 'sky')
 
-        const particles = this.add.particles('red')
+        const button = new Button(this, 400, 150, 'logo');
 
-        const emitter = particles.createEmitter({
-            speed: 100,
-            scale: { start: 1, end: 0 },
-            blendMode: 'ADD'
-        })
-
-        const logo = this.physics.add.image(400, 100, 'logo')
-
-        logo.setVelocity(100, 200)
-        logo.setBounce(1, 1)
-        logo.setCollideWorldBounds(true)
-
-        emitter.startFollow(logo)
+        button.on(InputEvent.PointerDown, () => {
+            console.log('clicked');
+        });
     }
 }

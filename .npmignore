@@ -1,0 +1,9 @@
+.cache
+dist
+node_modules
+src/demo
+.eslintignore
+.eslintrc.js
+.gitignore
+package-lock.json
+tsconfig.json
