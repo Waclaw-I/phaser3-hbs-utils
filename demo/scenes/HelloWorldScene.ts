@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
-import { Button } from '../../utils/buttons/Button'
-import { InputEvent } from '../../utils/types/input'
+import { Button } from '../../src/utils/buttons/Button'
+import { InputEvent } from '../../src/utils/types/input'
 
 export default class HelloWorldScene extends Phaser.Scene
 {
