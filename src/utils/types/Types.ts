@@ -1,22 +1,11 @@
 
-export enum InputEvent {
-    PointerDown = 'pointerdown',
-    PointerUp = 'pointerup',
-    PointerOver = 'pointerover',
-    PointerOut = 'pointerout',
-}
-
-export enum ButtonEvent {
-    Clicked = 'Clicked',
-    HoverOver = 'HoverOver',
-    HoverOut = 'HoverOut',
-}
-
 export interface KeyFrame {
     key: string;
     frame?: string | number;
 }
 
+
+// TODO: Replace with types from phaser typedefs
 export interface TextConfig {
     font: string;
     text: string;
@@ -26,14 +15,6 @@ export interface TextConfig {
         x: number;
         y?: number;
     }
-}
-
-export interface BitmapTextConfig {
-    font: string;
-    text: string;
-    size?: number;
-    color?: number;
-    origin?: { x: number, y?: number };
 }
 
 export interface Point {

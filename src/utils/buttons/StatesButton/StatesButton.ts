@@ -20,8 +20,7 @@ export class StatesButton extends StatesButtonBase {
             frame,
         };
         if (!this.topImage) {
-            this.topImage = this.scene.add.image(
-                0, -this.background.displayHeight * 0.5, key, frame).setOrigin(0.5, 0.5);
+            this.topImage = this.scene.add.image(0, 0, key, frame);
             this.add(this.topImage);
             return;
         }
@@ -34,52 +33,14 @@ export class StatesButton extends StatesButtonBase {
 
     protected initializeBackground(): void {
         this.background = this.scene.add.image(
-            0, 0, this.config.background[ButtonState.Idle].key, this.config.background[ButtonState.Idle].frame)
-            .setOrigin(0.5, 1)
+            0, 0, this.config.background[ButtonState.Idle].key, this.config.background[ButtonState.Idle].frame,
+        )
             .setScale(this.config.scale ?? 1);
-        this.background.y += this.background.displayHeight * 0.5;
+
         this.add(this.background);
     }
 
-    protected initializeText(): void {
-        if (this.config.bitmapTextConfig) {
-            const textConfig = this.config.bitmapTextConfig;
-            this.text = this.scene.add.bitmapText(
-                0,
-                0,
-                textConfig.font,
-                textConfig.text ?? '',
-                textConfig.size ?? 20,
-            )
-                .setOrigin(textConfig.origin?.x ?? 0.5, 0.6);
-            if (this.config.bitmapTextConfig.size) {
-                this.text.setFontSize(this.config.bitmapTextConfig.size);
-            }
-
-            this.setTextToDefaultPosition();
-
-            if (textConfig.color) {
-                this.text.setTint(textConfig.color);
-            }
-            this.add(this.text);
-        }
-    }
-
-    protected initializeTopImage(): void {
-        if (!this.config.topImage) {
-            return;
-        }
-        this.topImage = this.scene.add.image(
-            0, -this.background.displayHeight * 0.5, this.config.topImage.key, this.config.topImage.frame)
-            .setOrigin(0.5, 0.5);
-        this.add(this.topImage);
-
-    }
-
     protected setTextToDefaultPosition(): void {
-        this.text?.setPosition(
-            0,
-            this.background.y - this.background.displayHeight * 0.5,
-        );
+        this.text?.setPosition(0, this.background.y);
     }
 }

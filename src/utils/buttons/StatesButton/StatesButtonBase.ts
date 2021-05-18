@@ -1,4 +1,4 @@
-import { BitmapTextConfig, ButtonEvent, KeyFrame, Point } from '../../types/Types';
+import { Point } from '../../types/Types';
 
 export enum ButtonState {
     Idle,
@@ -8,8 +8,8 @@ export enum ButtonState {
 }
 
 export interface StatesButtonConfigBase {
-    bitmapTextConfig: BitmapTextConfig;
-    topImage?: KeyFrame;
+    bitmapTextConfig: Phaser.Types.GameObjects.BitmapText.BitmapTextConfig;
+    topImage?: Phaser.Types.GameObjects.Sprite.SpriteConfig;
     scale?: number;
     name?: string;
     offsets?: {
@@ -101,7 +101,6 @@ export abstract class StatesButtonBase extends Phaser.GameObjects.Container {
                 return;
             }
             this.changeState(ButtonState.Idle);
-            this.emit(ButtonEvent.Clicked, this.isActive);
         });
         this.on(Phaser.Input.Events.POINTER_DOWN, () => {
             if (this.isDisabled) {
@@ -117,23 +116,37 @@ export abstract class StatesButtonBase extends Phaser.GameObjects.Container {
                 return;
             }
             this.changeState(ButtonState.Hover);
-            this.emit(ButtonEvent.HoverOver, this.isActive);
         });
         this.on(Phaser.Input.Events.POINTER_OUT, () => {
             if (this.isDisabled) {
                 return;
             }
             this.changeState(ButtonState.Idle);
-            this.emit(ButtonEvent.HoverOut, this.isActive);
         });
     }
 
     public abstract setTopImage(key: string, frame?: string | number): void;
     protected abstract initializeBackground(): void;
-    protected abstract initializeTopImage(): void;
     protected abstract setTextToDefaultPosition(): void;
     protected abstract changeBackgroundTexture(state: ButtonState): void;
-    protected abstract initializeText(): void;
+
+    protected initializeTopImage(): void {
+        if (!this.config.topImage) {
+            return;
+        }
+        this.topImage = this.scene.make.image(this.config.topImage, true);
+        this.add(this.topImage);
+    }
+    
+    protected initializeText(): void {
+        if (!this.config.bitmapTextConfig) {
+            return;
+        }
+
+        this.text = this.scene.make.bitmapText(this.config.bitmapTextConfig, true);
+        this.setTextToDefaultPosition();
+        this.add(this.text);
+    }
 
     protected changeState(state: ButtonState): void {
         this.changeBackgroundTexture(state);

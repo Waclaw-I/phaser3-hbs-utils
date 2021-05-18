@@ -24,16 +24,16 @@
   },
   "homepage": "https://github.com/Waclaw-I/phaser3-hbs-utils#readme",
   "dependencies": {
-    "phaser": "^3.54.0"
+    "phaser": "3.54.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.15.2",
-    "@typescript-eslint/parser": "^4.15.2",
-    "eslint": "^7.20.0",
-    "parcel": "^1.12.4",
-    "parcel-plugin-clean-easy": "^1.0.2",
-    "parcel-plugin-static-files-copy": "^2.5.1",
-    "typescript": "^4.2.2"
+    "@typescript-eslint/eslint-plugin": "4.15.2",
+    "@typescript-eslint/parser": "4.15.2",
+    "eslint": "7.20.0",
+    "parcel": "1.12.4",
+    "parcel-plugin-clean-easy": "1.0.2",
+    "parcel-plugin-static-files-copy": "2.5.1",
+    "typescript": "4.2.2"
   },
   "parcelCleanPaths": [
     "dist"

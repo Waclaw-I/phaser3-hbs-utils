@@ -12,17 +12,14 @@ export default class HelloWorldScene extends Phaser.Scene
 
 	preload()
     {
-
         this.load.atlas('buttonBlue', `images/buttons/buttonBlue.png`, `images/buttons/buttonBlue.json`);
-        this.load.atlas('clouds', `images/clouds.png`, `images/clouds.json`);
         this.load.bitmapFont('ice', 'bitmapfonts/iceicebaby.png', 'bitmapfonts/iceicebaby.xml');
-        this.load.image('clouds2', 'images/clouds.png');
+
+        this.load.image('crate', 'http://labs.phaser.io/assets/sprites/block.png');
     }
 
     create()
     {
-        // this.add.image(400, 300, 'buttonBlue', 0);
-
         const button = new StatesButton(
             this,
             { x: 400, y: 400 },
@@ -37,9 +34,20 @@ export default class HelloWorldScene extends Phaser.Scene
                     font: 'ice',
                     text: 'clickMe',
                     size: 40,
+                    origin: 0.5,
+                },
+                topImage: {
+                    key: 'crate',
+                    scale: 0.5,
                 },
                 offsets: {
                     text: {
+                        [ButtonState.Idle]: { x: 0, y: 0 },
+                        [ButtonState.Hover]: { x: 0, y: 0 },
+                        [ButtonState.Pressed]: { x: 0, y: 3 },
+                        [ButtonState.Disabled]: { x: 0, y: 3 },
+                    },
+                    image: {
                         [ButtonState.Idle]: { x: 0, y: 0 },
                         [ButtonState.Hover]: { x: 0, y: 0 },
                         [ButtonState.Pressed]: { x: 0, y: 3 },
@@ -49,7 +57,7 @@ export default class HelloWorldScene extends Phaser.Scene
             },
         );
 
-        button.on(ButtonEvent.Clicked, () => {
+        button.on(Phaser.Input.Events.POINTER_UP, () => {
             console.log('clicked');
         });
     }
