@@ -14,19 +14,6 @@ export class StatesButton extends StatesButtonBase {
         super(scene, position, config);
     }
 
-    public setTopImage(key: string, frame?: string | number): void {
-        this.config.topImage = {
-            key,
-            frame,
-        };
-        if (!this.topImage) {
-            this.topImage = this.scene.add.image(0, 0, key, frame);
-            this.add(this.topImage);
-            return;
-        }
-        this.topImage.setTexture(key, frame);
-    }
-
     protected changeBackgroundTexture(state: ButtonState): void {
         this.background.setTexture(this.config.background[state].key, this.config.background[state].frame);
     }

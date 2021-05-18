@@ -16,6 +16,7 @@ export default class HelloWorldScene extends Phaser.Scene
         this.load.bitmapFont('ice', 'bitmapfonts/iceicebaby.png', 'bitmapfonts/iceicebaby.xml');
 
         this.load.image('crate', 'http://labs.phaser.io/assets/sprites/block.png');
+        this.load.image('apple', 'http://labs.phaser.io/assets/sprites/apple.png');
     }
 
     create()
@@ -59,6 +60,12 @@ export default class HelloWorldScene extends Phaser.Scene
 
         button.on(Phaser.Input.Events.POINTER_UP, () => {
             console.log('clicked');
+        });
+
+        button.setTopImage({
+            key: 'apple',
+            scale: 0.5,
+            origin: { x: 1, y: 0.5 },
         });
     }
 }

@@ -1,5 +1,7 @@
 import { Point } from '../../types/Types';
 
+// TODO: Components like approach? Make sure it implements basic interface and apply offsets? Create factory for easier usage?
+
 export enum ButtonState {
     Idle,
     Hover,
@@ -22,10 +24,9 @@ export abstract class StatesButtonBase extends Phaser.GameObjects.Container {
 
     protected buttonState: ButtonState;
 
-    protected topImage: Phaser.GameObjects.Image;
-    protected text: Phaser.GameObjects.BitmapText;
+    protected topImage?: Phaser.GameObjects.Image;
+    protected text?: Phaser.GameObjects.BitmapText;
 
-    protected isActive: boolean;
     protected isDisabled: boolean;
 
     protected config: StatesButtonConfigBase;
@@ -37,17 +38,50 @@ export abstract class StatesButtonBase extends Phaser.GameObjects.Container {
         this.buttonState = ButtonState.Idle;
 
         this.initializeBackground();
-        this.initializeTopImage();
-        this.initializeText();
+        if (this.config.topImage) {
+            this.setTopImage(this.config.topImage);
+        }
+        if (this.config.bitmapTextConfig) {
+            this.setText(this.config.bitmapTextConfig);
+        }
 
         this.updateSize();
         this.changeState(ButtonState.Idle);
         
         this.setInteractive({ cursor: 'pointer' });
-        this.isActive = true;
         this.scene.add.existing(this);
 
         this.bindEventHandlers();
+    }
+
+    public setTopImage(config: Phaser.Types.GameObjects.Sprite.SpriteConfig): void {
+        if (this.topImage) {
+            this.topImage.setActive(false).setVisible(false);
+            this.remove(this.topImage, true);
+        }
+
+        this.topImage = this.scene.make.image(config, true);
+        this.add(this.topImage);
+        return;
+    }
+
+    public getTopImage(): Phaser.GameObjects.Image | undefined {
+        return this.topImage;
+    }
+
+    public setText(config: Phaser.Types.GameObjects.BitmapText.BitmapTextConfig): void {
+        if (this.text) {
+            this.text.setActive(false).setVisible(false);
+            this.remove(this.text, true);
+        }
+
+        this.text = this.scene.make.bitmapText(this.config.bitmapTextConfig, true);
+        this.add(this.text);
+        this.setTextToDefaultPosition();
+    }
+
+    public getText(): Phaser.GameObjects.BitmapText | undefined {
+        return this.text;
     }
 
     public lockFromInput(lock: boolean = true): void {
@@ -58,13 +92,6 @@ export abstract class StatesButtonBase extends Phaser.GameObjects.Container {
         this.setInteractive({ cursor: 'pointer' });
     }
 
-    public makeActive(value: boolean = true): void {
-        if (this.isActive === value) {
-            return;
-        }
-        this.isActive = value;
-    }
-
     public setTopImageDisplaySize(width: number, height: number): void {
         if (!this.topImage) {
             return;
@@ -73,7 +100,7 @@ export abstract class StatesButtonBase extends Phaser.GameObjects.Container {
         this.updateSize();
     }
 
-    public setText(text: string): void {
+    public changeText(text: string): void {
         this.text.setText(text);
     }
 
@@ -125,28 +152,9 @@ export abstract class StatesButtonBase extends Phaser.GameObjects.Container {
         });
     }
 
-    public abstract setTopImage(key: string, frame?: string | number): void;
     protected abstract initializeBackground(): void;
     protected abstract setTextToDefaultPosition(): void;
     protected abstract changeBackgroundTexture(state: ButtonState): void;
-
-    protected initializeTopImage(): void {
-        if (!this.config.topImage) {
-            return;
-        }
-        this.topImage = this.scene.make.image(this.config.topImage, true);
-        this.add(this.topImage);
-    }
-    
-    protected initializeText(): void {
-        if (!this.config.bitmapTextConfig) {
-            return;
-        }
-
-        this.text = this.scene.make.bitmapText(this.config.bitmapTextConfig, true);
-        this.setTextToDefaultPosition();
-        this.add(this.text);
-    }
 
     protected changeState(state: ButtonState): void {
         this.changeBackgroundTexture(state);
