@@ -22,12 +22,6 @@ export class StatesButton extends StatesButtonBase {
         this.background = this.scene.add.image(
             0, 0, this.config.background[ButtonState.Idle].key, this.config.background[ButtonState.Idle].frame,
         )
-            .setScale(this.config.scale ?? 1);
-
         this.add(this.background);
-    }
-
-    protected setTextToDefaultPosition(): void {
-        this.text?.setPosition(0, this.background.y);
     }
 }

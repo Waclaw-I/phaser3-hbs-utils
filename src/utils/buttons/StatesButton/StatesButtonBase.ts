@@ -1,12 +1,9 @@
 import { Point } from '../../types/Types';
 
-// TODO: Components like approach? Make sure it implements basic interface and apply offsets? Create factory for easier usage?
-
 export enum ButtonState {
     Idle,
     Hover,
     Pressed,
-    Disabled,
 }
 
 export interface StatesButtonConfigBase {
@@ -27,8 +24,6 @@ export abstract class StatesButtonBase extends Phaser.GameObjects.Container {
     protected topImage?: Phaser.GameObjects.Image;
     protected text?: Phaser.GameObjects.BitmapText;
 
-    protected isDisabled: boolean;
-
     protected config: StatesButtonConfigBase;
 
     constructor(scene: Phaser.Scene, position: Point, config: StatesButtonConfigBase) {
@@ -46,6 +41,7 @@ export abstract class StatesButtonBase extends Phaser.GameObjects.Container {
         }
 
         this.updateSize();
+        this.setScale(this.config.scale ?? 1);
         this.changeState(ButtonState.Idle);
         
         this.setInteractive({ cursor: 'pointer' });
@@ -75,13 +71,18 @@ export abstract class StatesButtonBase extends Phaser.GameObjects.Container {
             this.remove(this.text, true);
         }
 
-        this.text = this.scene.make.bitmapText(this.config.bitmapTextConfig, true);
+        this.text = this.scene.make.bitmapText(config, true);
         this.add(this.text);
-        this.setTextToDefaultPosition();
+
+        this.config.bitmapTextConfig = config;
     }
 
     public getText(): Phaser.GameObjects.BitmapText | undefined {
         return this.text;
+    }
+
+    public changeText(text: string): void {
+        this.text?.setText(text);
     }
 
     public lockFromInput(lock: boolean = true): void {
@@ -90,23 +91,6 @@ export abstract class StatesButtonBase extends Phaser.GameObjects.Container {
             return;
         }
         this.setInteractive({ cursor: 'pointer' });
-    }
-
-    public setTopImageDisplaySize(width: number, height: number): void {
-        if (!this.topImage) {
-            return;
-        }
-        this.topImage.setDisplaySize(width, height);
-        this.updateSize();
-    }
-
-    public changeText(text: string): void {
-        this.text.setText(text);
-    }
-
-    public changeStateToDisabled(value: boolean = true): void {
-        this.isDisabled = value;
-        this.changeState(value ? ButtonState.Disabled : ButtonState.Idle);
     }
 
     private updateSize(): void {
@@ -124,36 +108,23 @@ export abstract class StatesButtonBase extends Phaser.GameObjects.Container {
 
     private bindEventHandlers(): void {
         this.on(Phaser.Input.Events.POINTER_UP, () => {
-            if (this.buttonState !== ButtonState.Pressed || this.isDisabled) {
-                return;
-            }
             this.changeState(ButtonState.Idle);
         });
         this.on(Phaser.Input.Events.POINTER_DOWN, () => {
-            if (this.isDisabled) {
-                return;
-            }
             this.changeState(ButtonState.Pressed);
         });
         this.on(Phaser.Input.Events.POINTER_OVER, () => {
-            if (this.isDisabled) {
-                return;
-            }
             if (this.buttonState === ButtonState.Pressed) {
                 return;
             }
             this.changeState(ButtonState.Hover);
         });
         this.on(Phaser.Input.Events.POINTER_OUT, () => {
-            if (this.isDisabled) {
-                return;
-            }
             this.changeState(ButtonState.Idle);
         });
     }
 
     protected abstract initializeBackground(): void;
-    protected abstract setTextToDefaultPosition(): void;
     protected abstract changeBackgroundTexture(state: ButtonState): void;
 
     protected changeState(state: ButtonState): void {
@@ -165,51 +136,17 @@ export abstract class StatesButtonBase extends Phaser.GameObjects.Container {
 
     private applyTopImageOffset(state: ButtonState): void {
         if (this.topImage) {
-            this.setTopImageToDefaultPosition();
-            let offset: Point | undefined;
-            switch (state) {
-                case ButtonState.Idle: {
-                    offset = this.config.offsets?.image?.[0];
-                    break;
-                }
-                case ButtonState.Hover: {
-                    offset = this.config.offsets?.image?.[1];
-                    break;
-                }
-                case ButtonState.Pressed: {
-                    offset = this.config.offsets?.image?.[2];
-                    break;
-                }
-            }
-            this.topImage.x += offset?.x ?? 0;
-            this.topImage.y += offset?.y ?? 0;
+            const offset = this.config.offsets?.image?.[state];
+            this.topImage.x = offset?.x ?? 0;
+            this.topImage.y = offset?.y ?? 0;
         }
     }
 
     private applyTextOffset(state: ButtonState): void {
         if (this.text) {
-            this.setTextToDefaultPosition();
-            let offset: Point | undefined;
-            switch (state) {
-                case ButtonState.Idle: {
-                    offset = this.config.offsets?.text?.[0];
-                    break;
-                }
-                case ButtonState.Hover: {
-                    offset = this.config.offsets?.text?.[1];
-                    break;
-                }
-                case ButtonState.Pressed: {
-                    offset = this.config.offsets?.text?.[2];
-                    break;
-                }
-            }
-            this.text.x += offset?.x ?? 0;
-            this.text.y += offset?.y ?? 0;
+            const offset = this.config.offsets?.image?.[state];
+            this.text.x = offset?.x ?? 0;
+            this.text.y = offset?.y ?? 0;
         }
-    }
-
-    private setTopImageToDefaultPosition(): void {
-        this.topImage?.setPosition(0, 0);
     }
 }

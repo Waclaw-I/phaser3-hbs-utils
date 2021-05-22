@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 import { StatesButton } from '../../src/utils/buttons/StatesButton/StatesButton';
 import { ButtonState } from '../../src/utils/buttons/StatesButton/StatesButtonBase';
-import { ButtonEvent } from '../../src/utils/types/Types';
 
 export default class HelloWorldScene extends Phaser.Scene
 {
@@ -29,11 +28,10 @@ export default class HelloWorldScene extends Phaser.Scene
                     [ButtonState.Idle]: { key: 'buttonBlue', frame: 0 },
                     [ButtonState.Hover]: { key: 'buttonBlue', frame: 1 },
                     [ButtonState.Pressed]: { key: 'buttonBlue', frame: 2 },
-                    [ButtonState.Disabled]: { key: 'buttonBlue', frame: 0 },
                 },
                 bitmapTextConfig: {
                     font: 'ice',
-                    text: 'clickMe',
+                    text: 'Text Yay',
                     size: 40,
                     origin: 0.5,
                 },
@@ -46,15 +44,14 @@ export default class HelloWorldScene extends Phaser.Scene
                         [ButtonState.Idle]: { x: 0, y: 0 },
                         [ButtonState.Hover]: { x: 0, y: 0 },
                         [ButtonState.Pressed]: { x: 0, y: 3 },
-                        [ButtonState.Disabled]: { x: 0, y: 3 },
                     },
                     image: {
                         [ButtonState.Idle]: { x: 0, y: 0 },
                         [ButtonState.Hover]: { x: 0, y: 0 },
                         [ButtonState.Pressed]: { x: 0, y: 3 },
-                        [ButtonState.Disabled]: { x: 0, y: 3 },
                     },
                 },
+                scale: 1.5,
             },
         );
 
