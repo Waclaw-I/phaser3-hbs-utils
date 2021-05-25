@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
-import { StatesButton } from '../../src/utils/buttons/StatesButton/StatesButton';
-import { ButtonState } from '../../src/utils/buttons/StatesButton/StatesButtonBase';
+import { StatesButton } from '../../src/utils/gui/buttons/StatesButton/StatesButton';
+import { ButtonState } from '../../src/utils/gui/buttons/StatesButton/StatesButtonBase';
+import { DragBox } from '../../src/utils/gui/containers/DragBox';
 
 export default class HelloWorldScene extends Phaser.Scene
 {
@@ -22,7 +23,7 @@ export default class HelloWorldScene extends Phaser.Scene
     {
         const button = new StatesButton(
             this,
-            { x: 400, y: 400 },
+            { x: 0, y: 0 },
             {
                 background: {
                     [ButtonState.Idle]: { key: 'buttonBlue', frame: 0 },
@@ -63,6 +64,20 @@ export default class HelloWorldScene extends Phaser.Scene
             key: 'apple',
             scale: 0.5,
             origin: { x: 1, y: 0.5 },
+        });
+
+        console.log(button.displayWidth);
+        console.log(button.displayHeight);
+
+        const dragBox = new DragBox(this, {
+            content: button,
+            height: 200,
+            width: 300,
+            repositionToCenter: true,
+            debug: {
+                showDraggableSpace: true,
+            },
+            position: { x: 300, y: 300 },
         });
     }
 }
