@@ -7,19 +7,11 @@ export enum DragBoxEvent {
     ScrollProgressHorizontal = 'scrollProgressHorizontal',
 }
 
-export interface DragBoxContent {
-    x: number;
-    y: number;
-    displayWidth: number;
-    displayHeight: number;
-    on: Function;
-}
-
 export interface DragBoxConfig {
     position: Point;
     width: number;
     height: number;
-    content: DragBoxContent;
+    content: Phaser.GameObjects.Container;
     horizontal?: boolean;
     repositionToCenter?: boolean;
     maskPosition?: Point;
@@ -33,7 +25,7 @@ export interface DragBoxConfig {
 export class DragBox extends Phaser.GameObjects.Container {
 
     private draggableSpace: Phaser.GameObjects.Rectangle;
-    private content: DragBoxContent;
+    private content: Phaser.GameObjects.Container;
     private myMask: Phaser.Display.Masks.GeometryMask;
 
     private draggableSpaceBottom: number;

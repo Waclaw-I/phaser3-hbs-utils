@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { StatesButton } from '../../src/utils/gui/buttons/StatesButton/StatesButton';
 import { ButtonState } from '../../src/utils/gui/buttons/StatesButton/StatesButtonBase';
 import { DragBox } from '../../src/utils/gui/containers/DragBox';
+import { Grid } from '../../src/utils/gui/grids/Grid';
+import { SimpleGridItem } from '../gameObjects/SimpleGridItem';
 
 export default class HelloWorldScene extends Phaser.Scene
 {
@@ -69,15 +71,26 @@ export default class HelloWorldScene extends Phaser.Scene
         console.log(button.displayWidth);
         console.log(button.displayHeight);
 
-        const dragBox = new DragBox(this, {
-            content: button,
-            height: 200,
-            width: 300,
-            repositionToCenter: true,
-            debug: {
-                showDraggableSpace: true,
-            },
-            position: { x: 300, y: 300 },
+        // const dragBox = new DragBox(this, {
+        //     content: button,
+        //     height: 25,
+        //     width: 25,
+        //     repositionToCenter: true,
+        //     debug: {
+        //         showDraggableSpace: true,
+        //     },
+        //     position: { x: 300, y: 300 },
+        // });
+
+        const grid = new Grid<SimpleGridItem>(this, {
+            position: { x: 300, y: 200 },
+            horizontal: false,
+            itemsInRow: 6,
+            spacing: 5,
         });
+
+        for (let i = 0; i < 20; ++i) {
+            grid.addItem(new SimpleGridItem(this, `${i}`, 'apple'));
+        }
     }
 }
