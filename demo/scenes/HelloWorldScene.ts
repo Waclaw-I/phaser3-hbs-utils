@@ -2,8 +2,9 @@ import Phaser from 'phaser';
 import { StatesButton } from '../../src/utils/gui/buttons/StatesButton/StatesButton';
 import { ButtonState } from '../../src/utils/gui/buttons/StatesButton/StatesButtonBase';
 import { DragBox } from '../../src/utils/gui/containers/DragBox';
-import { Grid } from '../../src/utils/gui/grids/Grid';
+import { Grid } from '../../src/utils/gui/containers/grids/Grid';
 import { SimpleGridItem } from '../gameObjects/SimpleGridItem';
+import { IconText } from '../../src/utils/gui/icons/IconText';
 
 export default class HelloWorldScene extends Phaser.Scene
 {
@@ -68,9 +69,6 @@ export default class HelloWorldScene extends Phaser.Scene
             origin: { x: 1, y: 0.5 },
         });
 
-        console.log(button.displayWidth);
-        console.log(button.displayHeight);
-
         // const dragBox = new DragBox(this, {
         //     content: button,
         //     height: 25,
@@ -82,15 +80,39 @@ export default class HelloWorldScene extends Phaser.Scene
         //     position: { x: 300, y: 300 },
         // });
 
-        const grid = new Grid<SimpleGridItem>(this, {
-            position: { x: 300, y: 200 },
-            horizontal: false,
-            itemsInRow: 6,
-            spacing: 5,
-        });
+        // const grid = new Grid<SimpleGridItem>(this, {
+        //     position: { x: 300, y: 200 },
+        //     horizontal: false,
+        //     itemsInRow: 6,
+        //     spacing: 5,
+        // });
 
-        for (let i = 0; i < 20; ++i) {
-            grid.addItem(new SimpleGridItem(this, `${i}`, 'apple'));
-        }
+        // for (let i = 0; i < 20; ++i) {
+        //     grid.addItem(new SimpleGridItem(this, `${i}`, 'apple'));
+        // }
+
+        const iconText = new IconText(
+            this,
+            {
+                x: 400,
+                y: 300,
+                textConfig: {
+                    x: 0,
+                    y: 0,
+                    text: 'apple',
+                    size: 80,
+                    font: 'ice',
+                },
+                imageConfig: {
+                    key: 'apple',
+                },
+                spacing: 0,
+                centered: true,
+                textFirst: false,
+                vertical: true,
+            },
+        );
+
+        iconText.setIconScale(1);
     }
 }

@@ -12,6 +12,7 @@ const config: Phaser.Types.Core.GameConfig = {
 			gravity: { y: 200 }
 		}
 	},
+	backgroundColor: 0xffffff,
 	scene: [HelloWorldScene]
 }
 

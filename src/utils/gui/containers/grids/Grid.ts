@@ -1,4 +1,4 @@
-import { Point } from '../../types/Types';
+import { Point } from '../../../types/Types';
 import { GridItem } from './GridItem';
 
 export enum GridEvent {

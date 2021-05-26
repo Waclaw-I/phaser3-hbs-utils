@@ -1,4 +1,8 @@
 
+export type CopyWithPartial<T, K extends keyof T> = {
+    [P in K]?: T[P];
+};
+
 export interface KeyFrame {
     key: string;
     frame?: string | number;

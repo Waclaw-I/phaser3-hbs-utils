@@ -1,4 +1,4 @@
-import { Point } from '../../types/Types';
+import { Point } from '../../../types/Types';
 
 export abstract class GridItem extends Phaser.GameObjects.Container {
     

@@ -1,4 +1,4 @@
-import { GridItem } from '../../src/utils/gui/grids/GridItem';
+import { GridItem } from '../../src/utils/gui/containers/grids/GridItem';
 import { Point } from '../../src/utils/types/Types';
 
 export interface SimpleGridItemContentData {

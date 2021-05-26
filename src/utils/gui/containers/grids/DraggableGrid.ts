@@ -1,5 +1,5 @@
-import { Point } from '../../types/Types';
-import { DragBox } from '../containers/DragBox';
+import { Point } from '../../../types/Types';
+import { DragBox } from '../DragBox';
 import { Grid, GridEvent } from './Grid';
 import { GridItem } from './GridItem';
 
