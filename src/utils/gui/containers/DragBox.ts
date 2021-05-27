@@ -24,14 +24,14 @@ export interface DragBoxConfig {
 
 export class DragBox extends Phaser.GameObjects.Container {
 
-    private draggableSpace: Phaser.GameObjects.Rectangle;
+    private draggableSpace!: Phaser.GameObjects.Rectangle;
     private content: Phaser.GameObjects.Container;
-    private myMask: Phaser.Display.Masks.GeometryMask;
+    private myMask!: Phaser.Display.Masks.GeometryMask;
 
-    private draggableSpaceBottom: number;
-    private draggableSpaceTop: number;
-    private draggableSpaceLeft: number;
-    private draggableSpaceRight: number;
+    private draggableSpaceBottom!: number;
+    private draggableSpaceTop!: number;
+    private draggableSpaceLeft!: number;
+    private draggableSpaceRight!: number;
     private lastDragValueVertical: number;
     private lastDragValueHorizontal: number;
     private dragForceVertical: number;

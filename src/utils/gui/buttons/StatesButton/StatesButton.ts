@@ -1,4 +1,4 @@
-import { KeyFrame, Point } from '../../types/Types';
+import { KeyFrame, Point } from '../../../types/Types';
 import { ButtonState, StatesButtonBase, StatesButtonConfigBase } from './StatesButtonBase';
 
 export interface StatesButtonConfig extends StatesButtonConfigBase {
@@ -7,8 +7,8 @@ export interface StatesButtonConfig extends StatesButtonConfigBase {
 
 export class StatesButton extends StatesButtonBase {
 
-    protected background: Phaser.GameObjects.Image;
-    protected config: StatesButtonConfig;
+    protected background!: Phaser.GameObjects.Image;
+    protected config!: StatesButtonConfig;
 
     constructor(scene: Phaser.Scene, position: Point, config: StatesButtonConfig) {
         super(scene, position, config);

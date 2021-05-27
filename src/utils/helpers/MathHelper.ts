@@ -1,4 +1,4 @@
-import { Point } from '../DataTypes';
+import { Point } from '../types/Types';
 
 export class MathHelper {
 

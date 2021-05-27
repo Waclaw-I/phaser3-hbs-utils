@@ -152,17 +152,18 @@ export class IconText extends Phaser.GameObjects.Container {
         this.text.x = this.iconImage.x - (this.iconImage.displayWidth * 0.5 + this.spacing) * side;
     }
 
+    //TODO: Get rid of casting
     private get textOffset(): Point {
         return {
-            x: this.config.textConfig.x ?? 0,
-            y: this.config.textConfig.y ?? 0,
+            x: <number>this.config.textConfig.x ?? 0,
+            y: <number>this.config.textConfig.y ?? 0,
         }
     }
 
     private get imageOffset(): Point {
         return {
-            x: this.config.imageConfig.x ?? 0,
-            y: this.config.imageConfig.y ?? 0,
+            x: <number>this.config.imageConfig.x ?? 0,
+            y: <number>this.config.imageConfig.y ?? 0,
         }
     }
 

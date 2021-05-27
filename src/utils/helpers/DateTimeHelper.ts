@@ -7,7 +7,7 @@ export class DateTimeHelper {
     }
 
     public static msToTime(timeMS: number): string {
-        const pad = (n) => {
+        const pad = (n: number) => {
             const z = 2;
             return (`00${n}`).slice(-z);
         };
