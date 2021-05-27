@@ -106,7 +106,7 @@ export default class HelloWorldScene extends Phaser.Scene
                 imageConfig: {
                     key: 'apple',
                 },
-                spacing: 0,
+                spacing: 100,
                 centered: true,
                 textFirst: false,
                 vertical: true,
@@ -114,5 +114,8 @@ export default class HelloWorldScene extends Phaser.Scene
         );
 
         iconText.setIconScale(1);
+
+        this.add.image(400, 300, 'apple').setScale(0.2);
     }
+
 }
