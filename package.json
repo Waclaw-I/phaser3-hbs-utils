@@ -1,7 +1,7 @@
 {
   "name": "@home-based-studio/phaser3-utils",
   "version": "0.2.1",
-  "description": "Some more and less common components used in various Phaser3 projects.",
+  "description": "Some more and less common components for Phaser3 projects.",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
   "files": [
@@ -30,7 +30,7 @@
     "@typescript-eslint/eslint-plugin": "4.15.2",
     "@typescript-eslint/parser": "4.15.2",
     "eslint": "7.20.0",
-    "parcel": "1.12.4",
+    "parcel": "1.12.3",
     "parcel-plugin-clean-easy": "1.0.2",
     "parcel-plugin-static-files-copy": "2.5.1",
     "typescript": "4.2.2"
