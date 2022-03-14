@@ -1,17 +1,26 @@
 import { Point } from '../../../types/Types';
 
-export abstract class GridItem extends Phaser.GameObjects.Container {
-    
-    protected id: string;
+export enum GridItemEvent {
+    Clicked = 'Clicked',
+    Hold = 'Hold',
+}
+
+// TODO: CHANGE TO ABSTRACT CLASS
+export class GridItem extends Phaser.GameObjects.Container {
+
+    protected id: string | undefined;
     protected lastDragValueX: number;
     protected lastDragValueY: number;
 
     protected isBeingDragged: boolean;
     protected pointerWasDownOnThisItem: boolean;
 
-    constructor(scene: Phaser.Scene, id: string) {
-        super(scene, 0, 0);
-        // NOTE: Should id be mandatory?
+    protected holdTimeout: number | undefined;
+
+    private static TIME_FOR_HOLD: number = 1000;
+
+    constructor(scene: Phaser.Scene, id?: string, position?: Point) {
+        super(scene, position?.x ?? 0, position?.y ?? 0);
         this.id = id;
 
         this.lastDragValueX = 0;
@@ -19,18 +28,21 @@ export abstract class GridItem extends Phaser.GameObjects.Container {
 
         this.isBeingDragged = false;
         this.pointerWasDownOnThisItem = false;
+        this.holdTimeout = undefined;
 
         this.scene.add.existing(this);
     }
 
-    public abstract getDimensions(): Point;
-    /**
-     * Return type is being overriden in subclasses
-     */
-    public abstract getContentData(): any;
+    public static getDimensions(): any {
+    // public static getDimensions(): Point {
+        // throw new MethodNotImplementedError();
+    }
 
-    public getId(): string { return this.id; }
-    public setId(id: string): void { this.id = id; }
+    public getContentData(): any {
+        // throw new MethodNotImplementedError();
+    }
+
+    public getId(): string | undefined { return this.id; }
 
     protected handleDrag(dragX: number, dragY: number): void {
         this.isBeingDragged = true;
@@ -44,27 +56,43 @@ export abstract class GridItem extends Phaser.GameObjects.Container {
     protected bindEventHandlers(): void {
         this.on('pointerdown', () => {
             this.pointerWasDownOnThisItem = true;
+            this.holdTimeout = window.setTimeout(
+                () => {
+                    this.emit(GridItemEvent.Hold);
+                },
+                GridItem.TIME_FOR_HOLD,
+            );
+
         });
         this.on('pointerout', () => {
             this.pointerWasDownOnThisItem = false;
         });
         this.on('pointerup', () => {
+            this.clearHoldTimeout();
             if (this.isBeingDragged || !this.pointerWasDownOnThisItem) {
                 return;
             }
             this.pointerWasDownOnThisItem = false;
-            this.emit('clicked');
+            this.emit(GridItemEvent.Clicked);
         });
 
         this.on('drag', (pointer: Phaser.Input.Pointer, dragX: number, dragY: number) => {
+            this.clearHoldTimeout();
             this.handleDrag(dragX - this.x, dragY - this.y);
         });
 
         this.on('dragend', () => {
-            // NOTE: hack to set isBeingDragged value AFTER pointerup event.
+            // NOTE: Little trick to set isBeingDragged value AFTER pointerup event.
             window.setTimeout(() => { this.isBeingDragged = false; });
             this.lastDragValueX = 0;
             this.lastDragValueY = 0;
         });
+    }
+
+    private clearHoldTimeout(): void {
+        if (this.holdTimeout) {
+            window.clearTimeout(this.holdTimeout);
+            this.holdTimeout = undefined;
+        }
     }
 }

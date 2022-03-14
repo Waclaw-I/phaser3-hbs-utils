@@ -1,10 +1,12 @@
 import { Point } from '../../../types/Types';
-import { GridItem } from './GridItem';
+import { GridItem, GridItemEvent } from './GridItem';
 
 export enum GridEvent {
+    Clicked = 'Clicked',
     ItemClicked = 'ItemClicked',
-    ItemDragged = 'ItemDragged',
+    ItemHold = 'ItemHold',
     Wheel = 'Wheel',
+
 }
 
 export interface GridConfig {
@@ -17,9 +19,9 @@ export interface GridConfig {
 // TODO: some sort of stop bumpers at the end? locking list with whole visible fields?
 // TODO: Future tweaks, slight refactor?
 // TODO: Pass dragY further if end/top of the list was reached
-export class Grid<T extends GridItem> extends Phaser.GameObjects.Container {
+export class Grid extends Phaser.GameObjects.Container {
 
-    private items: T[];
+    private items: GridItem[];
     private config: GridConfig;
 
     private spacing: number;
@@ -41,10 +43,9 @@ export class Grid<T extends GridItem> extends Phaser.GameObjects.Container {
         this.scene.add.existing(this);
     }
 
-    public clearAllItems(destroy: boolean = true): void {
-        this.remove(this.items, destroy);
-        if (!destroy) {
-            this.items.forEach(item => item.setVisible(false).setActive(false));
+    public clearAllItems(): void {
+        for (const item of this.items) {
+            item.destroy(); // TODO: Use some nice pool if lagging
         }
         this.items = [];
         this.setSize(0, 0);
@@ -73,7 +74,7 @@ export class Grid<T extends GridItem> extends Phaser.GameObjects.Container {
         return this.swapItemsPositions(itemToPlace, itemOnDesiredPosition);
     }
 
-    public swapItemsPositions(firstItem: T, secondItem: T): boolean {
+    public swapItemsPositions(firstItem: GridItem, secondItem: GridItem): boolean {
         if (firstItem === secondItem) {
             return true;
         }
@@ -81,21 +82,28 @@ export class Grid<T extends GridItem> extends Phaser.GameObjects.Container {
             return false;
         }
 
+        const firstItemId = firstItem.getId();
+        const secondItemId = secondItem.getId();
+
+        if (!firstItemId || !secondItemId) {
+            return false;
+        }
+
         const firstItemPos = { x: firstItem.x, y: firstItem.y };
         firstItem.setPosition(secondItem.x, secondItem.y);
         secondItem.setPosition(firstItemPos.x, firstItemPos.y);
 
-        const firstItemIndex = this.getItemIndexOfId(firstItem.getId());
-        const secondItemIndex = this.getItemIndexOfId(secondItem.getId());
+        const firstItemIndex = this.getItemIndexOfId(firstItemId);
+        const secondItemIndex = this.getItemIndexOfId(secondItemId);
 
         const temp = firstItem;
         this.items[firstItemIndex] = secondItem;
-        this.items[secondItemIndex] = firstItem;
+        this.items[secondItemIndex] = temp;
 
         return true;
     }
 
-    public addItem(item: T): void {
+    public addItem(item: GridItem): void {
 
         this.items.push(item);
         this.add(item);
@@ -133,18 +141,17 @@ export class Grid<T extends GridItem> extends Phaser.GameObjects.Container {
         this.updateSize();
     }
 
-    public getItemOfIndex(index: number): T | undefined {
+    public getItemOfIndex(index: number): GridItem | undefined {
         return this.items[index];
     }
 
-    public getItemOfId(id: string): T | undefined {
+    public getItemOfId(id: string): GridItem | undefined {
         return this.items[this.getItemIndexOfId(id)];
     }
-    
+
     private getItemIndexOfId(id: string): number {
         return this.items.map(item => item.getId()).indexOf(id);
     }
-
 
     private switchItemsPositionsUpToIndex(index: number): void {
         for (let i = this.items.length - 1; i > index; i -= 1) {
@@ -154,8 +161,18 @@ export class Grid<T extends GridItem> extends Phaser.GameObjects.Container {
     }
 
     private updateSize(): void {
-        const bounds = this.getBounds();
-        this.setSize(bounds.width, bounds.height);
+        let edgeLeft = Phaser.Math.MAX_SAFE_INTEGER;
+        let edgeRight = 0;
+        let edgeTop = Phaser.Math.MAX_SAFE_INTEGER;
+        let edgeBottom = 0;
+
+        for (const item of this.items) {
+            edgeLeft = Math.min(edgeLeft, item.x - item.displayWidth * 0.5);
+            edgeRight = Math.max(edgeRight, item.x + item.displayWidth * 0.5);
+            edgeTop = Math.min(edgeTop, item.y - item.displayHeight * 0.5);
+            edgeBottom = Math.max(edgeBottom, item.y + item.displayHeight * 0.5);
+        }
+        this.setSize(Math.abs(edgeLeft - edgeRight), Math.abs(edgeTop - edgeBottom));
     }
 
     private registerItemEvents(item: GridItem): void {
@@ -164,26 +181,27 @@ export class Grid<T extends GridItem> extends Phaser.GameObjects.Container {
         });
         item.on('dragY', (dragY: number) => {
             this.emit('dragY', dragY);
-            this.emit(GridEvent.ItemDragged, item);
         });
         item.on('dragX', (dragX: number) => {
             this.emit('dragX', dragX);
-            this.emit(GridEvent.ItemDragged, item);
-        });
-        item.on('clicked', () => {
-            this.emit('clicked');
-            this.emit(GridEvent.ItemClicked, item);
-        });
-        item.on('pointerdown', () => {
-            this.emit('pointerdown');
         });
         item.on('wheel', (pointer: Phaser.Input.Pointer, dx: number, dy: number, dz: number) => {
             this.emit('wheel', pointer, dx, dy, dz);
             this.emit(GridEvent.Wheel);
         });
+        item.on(GridItemEvent.Clicked, () => {
+            this.emit(GridEvent.Clicked);
+            this.emit(GridEvent.ItemClicked, item);
+        });
+        item.on(GridItemEvent.Hold, () => {
+            this.emit(GridEvent.ItemHold, item);
+        });
+        item.on('pointerdown', () => {
+            this.emit('pointerdown');
+        });
     }
 
-    public getItems(): T[] { return this.items; }
+    public getItems(): GridItem[] { return this.items; }
 
     public getHeight(): number { return this.displayHeight; }
 }

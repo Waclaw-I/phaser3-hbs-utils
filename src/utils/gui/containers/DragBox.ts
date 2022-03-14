@@ -1,5 +1,6 @@
 import { CircularBuffer } from '../../dataStructures/CircularBuffer';
 import { MathHelper } from '../../helpers/MathHelper';
+import { Color } from '../../types/Enums';
 import { Easing, Point } from '../../types/Types';
 
 export enum DragBoxEvent {
@@ -15,9 +16,15 @@ export interface DragBoxConfig {
     horizontal?: boolean;
     repositionToCenter?: boolean;
     maskPosition?: Point;
+    margin?: {
+        top?: number;
+        bottom?: number;
+        left?: number;
+        right?: number;
+    }
     debug?: {
         showDraggableSpace: boolean;
-        color?: number;
+        color?: Color;
         alpha?: number;
     };
 }
@@ -123,8 +130,12 @@ export class DragBox extends Phaser.GameObjects.Container {
     public async moveContentTo(progress: number, duration: number = 0): Promise<void> {
         const clampedProgress = Phaser.Math.Clamp(progress, 0, 1);
         // TODO: Add horizontal
-        const heightDifference = this.content.displayHeight - this.draggableSpace.displayHeight;
-        const targetPosition = this.draggableSpaceTop - (clampedProgress * heightDifference);
+        const dimensionDifference = this.config.horizontal ?
+        this.content.displayWidth - this.draggableSpace.displayWidth + this.getHorizontalMargin() :
+        this.content.displayHeight - this.draggableSpace.displayHeight + this.getVerticalMargin();
+        const targetPosition = this.config.horizontal ?
+        this.draggableSpaceLeft - (clampedProgress * dimensionDifference) :
+        this.draggableSpaceTop - (clampedProgress * dimensionDifference);
 
         if (duration === 0) {
             if (this.config.horizontal) {
@@ -172,11 +183,11 @@ export class DragBox extends Phaser.GameObjects.Container {
         if (this.config.horizontal) {
             from = this.content.x;
             to = this.content.x - moveBy;
-            if (moveBy > 0 && !this.canDragLeft(moveBy)) {
-                to = this.draggableSpaceLeft;
-            }
-            if (moveBy < 0 && !this.canDragRight(moveBy)) {
+            if (moveBy > 0 && !this.canDragRight(moveBy)) {
                 to = this.draggableSpaceRight +  - this.content.displayWidth;
+            }
+            if (moveBy < 0 && !this.canDragLeft(moveBy)) {
+                to = this.draggableSpaceLeft;
             }
         } else {
             from = this.content.y;
@@ -269,7 +280,7 @@ export class DragBox extends Phaser.GameObjects.Container {
             y = maskPos.y - (this.draggableSpace.displayHeight / 2);
         }
         const maskShape =
-            this.scene.make.graphics({ fillStyle: { color: 0xffff00, alpha: 0.5 }, add: false })
+            this.scene.make.graphics({ fillStyle: { color: Color.Yellow, alpha: 0.5 }, add: false })
                 .fillRect(
                     x,
                     y,
@@ -286,18 +297,19 @@ export class DragBox extends Phaser.GameObjects.Container {
             0,
             this.config.width,
             this.config.height,
-            this.config.debug?.color ?? 0x00ff00,
+            this.config.debug?.color ?? Color.Green,
             this.config.debug?.showDraggableSpace ? (this.config.debug.alpha ?? 0.5) : 0);
+
         this.updateDraggableSpaceEdges();
         this.draggableSpace.setInteractive();
         this.scene.input.setDraggable(this.draggableSpace);
     }
 
     private updateDraggableSpaceEdges(): void {
-        this.draggableSpaceBottom = this.draggableSpace.y + this.draggableSpace.displayHeight / 2;
-        this.draggableSpaceTop = this.draggableSpace.y - this.draggableSpace.displayHeight / 2;
-        this.draggableSpaceLeft = this.draggableSpace.x - this.draggableSpace.displayWidth / 2;
-        this.draggableSpaceRight = this.draggableSpace.x + this.draggableSpace.displayWidth / 2;
+        this.draggableSpaceTop = this.draggableSpace.y - (this.draggableSpace.displayHeight / 2) + this.getMarginTop();
+        this.draggableSpaceBottom = this.draggableSpace.y + this.draggableSpace.displayHeight / 2 - this.getMarginBottom();
+        this.draggableSpaceLeft = this.draggableSpace.x - this.draggableSpace.displayWidth / 2 + this.getMarginLeft();
+        this.draggableSpaceRight = this.draggableSpace.x + this.draggableSpace.displayWidth / 2 - this.getMarginRight();
     }
 
     private handleDragY(dragY: number): void {
@@ -351,6 +363,10 @@ export class DragBox extends Phaser.GameObjects.Container {
 
     private dragWithWheel(dx: number, dy: number): void {
         if (this.isDraggableVertically()) {
+            this.stopDragForce();
+            this.moveContentBy(250 * (dy > 0 ? 1 : -1), 250, Easing.ExpoEaseOut);
+        }
+        else if (this.isDraggableHorizontally()) {
             this.stopDragForce();
             this.moveContentBy(250 * (dy > 0 ? 1 : -1), 250, Easing.ExpoEaseOut);
         }
@@ -413,13 +429,11 @@ export class DragBox extends Phaser.GameObjects.Container {
     }
 
     public getScrollProgressVertical(): number {
-        const heightDifference = this.content.displayHeight - this.draggableSpace.displayHeight;
-        return (this.draggableSpaceTop - this.content.y) / heightDifference;
+        return (this.draggableSpaceTop - this.content.y) / this.getHeightDifferenceVertical();
     }
 
     public getScrollProgressHorizontal(): number {
-        const widthDifference = this.content.displayWidth - this.draggableSpace.displayWidth;
-        return (this.draggableSpaceLeft - this.content.x) / widthDifference;
+        return (this.draggableSpaceLeft - this.content.x) / this.getHeightDifferenceHorizontal();
     }
 
     private dragContentVerticallyByValue(dragBy: number): void {
@@ -488,25 +502,61 @@ export class DragBox extends Phaser.GameObjects.Container {
         if (this.config.horizontal || !this.isDraggable) {
             return false;
         }
-        return this.draggableSpace.displayHeight < this.content.displayHeight;
+        return this.draggableSpace.displayHeight < (this.content.displayHeight + this.getVerticalMargin());
     }
 
     public isDraggableHorizontally(): boolean {
         if (!this.config.horizontal || !this.isDraggable) {
             return false;
         }
-        return this.draggableSpace.displayWidth < this.content.displayWidth;
+        return this.draggableSpace.displayWidth < (this.content.displayWidth + this.getHorizontalMargin());
     }
 
     public getVisibleVerticalSpaceRatioToContent(): number {
-        return this.draggableSpace.displayHeight / this.content.displayHeight;
+        return this.draggableSpace.displayHeight / (this.content.displayHeight + this.getVerticalMargin());
     }
 
     public getVisibleHorizontalSpaceRatioToContent(): number {
-        return this.draggableSpace.displayWidth / this.content.displayWidth;
+        return this.draggableSpace.displayWidth / (this.content.displayWidth + this.getHorizontalMargin());
     }
 
     public getMyMask(): Phaser.Display.Masks.GeometryMask {
         return this.myMask;
     }
+
+    private getHeightDifferenceVertical(): number {
+        return this.content.displayHeight + this.getVerticalMargin() -
+            this.draggableSpace.displayHeight;
+    }
+
+    private getHeightDifferenceHorizontal(): number {
+        return this.content.displayWidth + this.getHorizontalMargin() -
+            this.draggableSpace.displayWidth;
+    }
+
+
+    private getVerticalMargin(): number {
+        return (this.config.margin?.top ?? 0) + (this.config.margin?.bottom ?? 0);
+    }
+
+    private getHorizontalMargin(): number {
+        return (this.config.margin?.left ?? 0) + (this.config.margin?.right ?? 0);
+    }
+
+    private getMarginTop(): number {
+        return this.config.margin?.top ?? 0;
+    }
+
+    private getMarginBottom(): number {
+        return this.config.margin?.bottom ?? 0;
+    }
+
+    private getMarginLeft(): number {
+        return this.config.margin?.left ?? 0;
+    }
+
+    private getMarginRight(): number {
+        return this.config.margin?.right ?? 0;
+    }
+
 }
