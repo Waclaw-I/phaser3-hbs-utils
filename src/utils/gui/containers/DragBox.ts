@@ -239,6 +239,14 @@ export class DragBox extends Phaser.GameObjects.Container {
         this.updateMask(maskPosition);
     }
 
+    public updateMask(maskPosition?: Point): void {
+        this.clearMask();
+        this.myMask?.geometryMask?.destroy();
+        this.myMask?.destroy();
+        this.myMask = this.createMask(maskPosition);
+        this.setMask(this.myMask);
+    }
+
     protected repositionContent(): void {
         if (this.config.repositionToCenter) {
             if (this.config.horizontal) {
@@ -260,14 +268,6 @@ export class DragBox extends Phaser.GameObjects.Container {
             return dragForce * 0.5;
         }
         return dragForce * 0.98;
-    }
-
-    private updateMask(maskPosition?: Point): void {
-        this.clearMask();
-        this.myMask?.geometryMask?.destroy();
-        this.myMask?.destroy();
-        this.myMask = this.createMask(maskPosition);
-        this.setMask(this.myMask);
     }
 
     private createMask(maskPosition?: Point): Phaser.Display.Masks.GeometryMask {
