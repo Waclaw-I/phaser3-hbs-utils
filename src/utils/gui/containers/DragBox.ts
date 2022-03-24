@@ -540,6 +540,14 @@ export class DragBox extends Phaser.GameObjects.Container {
         return this.config.margin?.right ?? 0;
     }
 
+    public getDraggableSpaceWidth(): number {
+        return this.draggableSpace.displayWidth;
+    }
+
+    public getDraggableSpaceHeight(): number {
+        return this.draggableSpace.displayHeight;
+    }
+
     private getHeightDifferenceVertical(): number {
         return this.content.displayHeight + this.getVerticalMargin() -
             this.draggableSpace.displayHeight;

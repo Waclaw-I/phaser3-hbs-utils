@@ -61,11 +61,12 @@ export class DraggableGrid extends DragBox {
 
     public async centerOnItem(index: number, duration: number = 0): Promise<void> {
         const itemPos = this.grid.getItemLocalPosition(index);
-        const gridVisibleWidth = this.draggableGridConfig.dimension.x;
+        const draggableSpaceWidth = this.getDraggableSpaceWidth();
+        const draggableSpaceHeight = this.getDraggableSpaceHeight();
         this.moveContentTo(
             this.isHorizontal() ?
-            (itemPos.x + this.getMarginLeft() - gridVisibleWidth / 2) / (this.grid.width + this.getMarginLeft() + this.getMarginRight() - gridVisibleWidth) :
-            itemPos.y / (this.grid.height + this.getMarginTop() + this.getMarginBottom()),
+            (itemPos.x + this.getMarginLeft() - draggableSpaceWidth / 2) / (this.grid.width + this.getMarginLeft() + this.getMarginRight() - draggableSpaceWidth) :
+            (itemPos.y + this.getMarginTop() - draggableSpaceHeight / 2) / (this.grid.height + this.getMarginTop() + this.getMarginBottom() - draggableSpaceHeight),
             duration,
         );
     }

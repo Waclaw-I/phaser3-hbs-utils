@@ -99,6 +99,12 @@ export default class HelloWorldScene extends Phaser.Scene {
             },
         );
 
+        this.draggableGrid.changeDraggableSpacePosAndSize(
+            { x: 400, y: 300 },
+            { x: 500, y: 250 },
+            { x: 400, y: 300 },
+        );
+
         this.populateGrid();
 
         this.add.image(400, 300, 'apple');
@@ -112,7 +118,7 @@ export default class HelloWorldScene extends Phaser.Scene {
         });
 
         this.input.keyboard.on('keydown-C', () => {
-            this.draggableGrid.centerOnItem(9, 500);
+            this.draggableGrid.centerOnItem(4, 500);
         });
     }
 
