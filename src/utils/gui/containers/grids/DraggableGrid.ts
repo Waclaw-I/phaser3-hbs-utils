@@ -104,6 +104,10 @@ export class DraggableGrid extends DragBox {
         return this.draggableGridConfig.itemsInRow;
     }
 
+    public getGridSize(): Point {
+        return { x: this.grid.width, y: this.grid.height };
+    }
+
     public getGridPosition(): Point {
         return { x: this.grid.x, y: this.grid.y };
     }
