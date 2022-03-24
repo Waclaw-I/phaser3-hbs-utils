@@ -103,6 +103,10 @@ export class Grid extends Phaser.GameObjects.Container {
         return true;
     }
 
+    public setItemsInRow(count: number): void {
+        this.itemsInRow = count;
+    }
+
     public addItem(item: GridItem): void {
 
         this.items.push(item);
@@ -139,6 +143,10 @@ export class Grid extends Phaser.GameObjects.Container {
             }
         }
         this.updateSize();
+    }
+
+    public getItemLocalPosition(index: number): Point {
+        return { x: this.items[index].x, y: this.items[index].y };
     }
 
     public getItemOfIndex(index: number): GridItem | undefined {

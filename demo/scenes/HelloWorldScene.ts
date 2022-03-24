@@ -6,9 +6,12 @@ import { DraggableGrid } from '../../src/utils/gui/containers/grids/DraggableGri
 import { Grid } from '../../src/utils/gui/containers/grids/Grid';
 import { SimpleGridItem } from '../gameObjects/SimpleGridItem';
 import { IconText } from '../../src/utils/gui/icons/IconText';
+import { MathHelper } from '../../src/utils/helpers/MathHelper';
 
-export default class HelloWorldScene extends Phaser.Scene
-{
+export default class HelloWorldScene extends Phaser.Scene {
+
+    private draggableGrid: DraggableGrid;
+
 	constructor()
 	{
 		super('hello-world');
@@ -76,7 +79,7 @@ export default class HelloWorldScene extends Phaser.Scene
         //     spacing: 5,
         // });
 
-        const draggableGrid = new DraggableGrid(
+        this.draggableGrid = new DraggableGrid(
             this,
             {
                 position: { x: 400, y: 300 },
@@ -84,59 +87,42 @@ export default class HelloWorldScene extends Phaser.Scene
                 dimension: { x: 400, y: 300 },
                 horizontal: true,
                 repositionToCenter: true,
-                itemsInRow: 3,
+                itemsInRow: 1,
                 margin: {
-                    left: 10,
-                    right: 10,
+                    left: 250,
+                    right: 250,
                 },
                 spacing: 50,
+                debug: {
+                    showDraggableSpace: true,
+                }
             },
         );
 
-        for (let i = 0; i < 20; ++i) {
-            draggableGrid.addItem(new SimpleGridItem(this, `${i}`, 'apple'));
+        this.populateGrid();
+
+        this.add.image(400, 300, 'apple');
+
+        this.bindEventHandlers();
+    }
+
+    private bindEventHandlers(): void {
+        this.input.keyboard.on('keydown-R', () => {
+            this.populateGrid();
+        });
+
+        this.input.keyboard.on('keydown-C', () => {
+            this.draggableGrid.centerOnItem(9, 500);
+        });
+    }
+
+    private populateGrid(): void {
+        this.draggableGrid.clearAllItems();
+        this.draggableGrid.setItemsInRow(MathHelper.randomFrom(1, 1));
+        for (let i = 0; i < 10; ++i) {
+            this.draggableGrid.addItem(new SimpleGridItem(this, `${i}`, 'apple'));
         }
-
-        // const dragBox = new DragBox(this, {
-        //     content: grid,
-        //     height: 300,
-        //     width: 300,
-        //     margin: {
-        //         top: 10,
-        //         bottom: 10,
-        //     },
-        //     repositionToCenter: true,
-        //     debug: {
-        //         showDraggableSpace: true,
-        //     },
-        //     position: { x: 300, y: 300 },
-        // });
-
-        // const iconText = new IconText(
-        //     this,
-        //     {
-        //         x: 400,
-        //         y: 300,
-        //         textConfig: {
-        //             x: 0,
-        //             y: 0,
-        //             text: 'apple',
-        //             size: 80,
-        //             font: 'ice',
-        //         },
-        //         imageConfig: {
-        //             key: 'apple',
-        //         },
-        //         spacing: 100,
-        //         centered: true,
-        //         textFirst: false,
-        //         vertical: true,
-        //     },
-        // );
-
-        // iconText.setIconScale(1);
-
-        // this.add.image(400, 300, 'apple').setScale(0.2);
+        this.draggableGrid.moveContentToBeginning();
     }
 
 }

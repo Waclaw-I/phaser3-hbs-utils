@@ -524,6 +524,22 @@ export class DragBox extends Phaser.GameObjects.Container {
         return this.myMask;
     }
 
+    public getMarginTop(): number {
+        return this.config.margin?.top ?? 0;
+    }
+
+    public getMarginBottom(): number {
+        return this.config.margin?.bottom ?? 0;
+    }
+
+    public getMarginLeft(): number {
+        return this.config.margin?.left ?? 0;
+    }
+
+    public getMarginRight(): number {
+        return this.config.margin?.right ?? 0;
+    }
+
     private getHeightDifferenceVertical(): number {
         return this.content.displayHeight + this.getVerticalMargin() -
             this.draggableSpace.displayHeight;
@@ -542,21 +558,4 @@ export class DragBox extends Phaser.GameObjects.Container {
     private getHorizontalMargin(): number {
         return (this.config.margin?.left ?? 0) + (this.config.margin?.right ?? 0);
     }
-
-    private getMarginTop(): number {
-        return this.config.margin?.top ?? 0;
-    }
-
-    private getMarginBottom(): number {
-        return this.config.margin?.bottom ?? 0;
-    }
-
-    private getMarginLeft(): number {
-        return this.config.margin?.left ?? 0;
-    }
-
-    private getMarginRight(): number {
-        return this.config.margin?.right ?? 0;
-    }
-
 }
