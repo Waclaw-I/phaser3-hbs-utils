@@ -368,7 +368,7 @@ export class DragBox extends Phaser.GameObjects.Container {
         }
         else if (this.isDraggableHorizontally()) {
             this.stopDragForce();
-            this.moveContentBy(dy ?? dx, 250, Easing.ExpoEaseOut);
+            this.moveContentBy(dx ?? dy, 250, Easing.ExpoEaseOut);
         }
     }
 
