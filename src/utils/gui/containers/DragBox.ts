@@ -364,11 +364,11 @@ export class DragBox extends Phaser.GameObjects.Container {
     private dragWithWheel(dx: number, dy: number): void {
         if (this.isDraggableVertically()) {
             this.stopDragForce();
-            this.moveContentBy(250 * (dy > 0 ? 1 : -1), 250, Easing.ExpoEaseOut);
+            this.moveContentBy(dy ?? dx, 250, Easing.ExpoEaseOut);
         }
         else if (this.isDraggableHorizontally()) {
             this.stopDragForce();
-            this.moveContentBy(250 * (dy > 0 ? 1 : -1), 250, Easing.ExpoEaseOut);
+            this.moveContentBy(dy ?? dx, 250, Easing.ExpoEaseOut);
         }
     }
 
