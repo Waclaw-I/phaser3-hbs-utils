@@ -10,7 +10,8 @@ import { MathHelper } from '../../src/utils/helpers/MathHelper';
 
 export default class HelloWorldScene extends Phaser.Scene {
 
-    private draggableGrid: DraggableGrid;
+    private horizontalDraggableGrid: DraggableGrid;
+    private verticalDraggableGrid: DraggableGrid;
 
 	constructor()
 	{
@@ -79,11 +80,28 @@ export default class HelloWorldScene extends Phaser.Scene {
         //     spacing: 5,
         // });
 
-        this.draggableGrid = new DraggableGrid(
+        // function detectTrackPad(e) {
+        //     console.log(e.wheelDeltaY, e.deltaMode);
+        //     var isTrackpad = false;
+        //     if (e.wheelDeltaY) {
+        //       if (Math.abs(e.wheelDeltaY) !== 120) {
+        //         isTrackpad = true;
+        //       }
+        //     }
+        //     else if (e.deltaMode === 0) {
+        //       isTrackpad = true;
+        //     }
+        //     console.log(isTrackpad ? "Trackpad detected" : "Mousewheel detected");
+        //   }
+          
+        //   document.addEventListener("mousewheel", detectTrackPad, false);
+        //   document.addEventListener("DOMMouseScroll", detectTrackPad, false);
+
+        this.horizontalDraggableGrid = new DraggableGrid(
             this,
             {
-                position: { x: 400, y: 300 },
-                maskPosition: { x: 400, y: 300 },
+                position: { x: 500, y: 300 },
+                maskPosition: { x: 500, y: 300 },
                 dimension: { x: 400, y: 300 },
                 horizontal: true,
                 repositionToCenter: true,
@@ -100,34 +118,56 @@ export default class HelloWorldScene extends Phaser.Scene {
             },
         );
 
-        this.draggableGrid.changeDraggableSpacePosAndSize(
-            { x: 400, y: 300 },
-            { x: 500, y: 250 },
-            { x: 400, y: 300 },
+        this.verticalDraggableGrid =new DraggableGrid(
+            this,
+            {
+                position: { x: 150, y: 300 },
+                maskPosition: { x: 150, y: 300 },
+                dimension: { x: 200, y: 600 },
+                horizontal: false,
+                repositionToCenter: true,
+                reverseScrollForTrackpad: true,
+                itemsInRow: 1,
+                margin: {
+                    left: 250,
+                    right: 250,
+                },
+                spacing: 50,
+                debug: {
+                    showDraggableSpace: true,
+                }
+            },
         );
 
-        this.populateGrid();
+        this.populateGrids();
 
         this.bindEventHandlers();
     }
 
     private bindEventHandlers(): void {
         this.input.keyboard.on('keydown-R', () => {
-            this.populateGrid();
+            this.populateGrids();
         });
 
         this.input.keyboard.on('keydown-C', () => {
-            this.draggableGrid.centerOnItem(4, 500);
+            this.horizontalDraggableGrid.centerOnItem(4, 500);
         });
     }
 
-    private populateGrid(): void {
-        this.draggableGrid.clearAllItems();
-        this.draggableGrid.setItemsInRow(MathHelper.randomFrom(1, 1));
+    private populateGrids(): void {
+        this.horizontalDraggableGrid.clearAllItems();
+        this.horizontalDraggableGrid.setItemsInRow(MathHelper.randomFrom(1, 1));
         for (let i = 0; i < 10; ++i) {
-            this.draggableGrid.addItem(new SimpleGridItem(this, `${i}`, 'apple'));
+            this.horizontalDraggableGrid.addItem(new SimpleGridItem(this, `${i}`, 'apple'));
         }
-        this.draggableGrid.moveContentToBeginning();
+        this.horizontalDraggableGrid.moveContentToBeginning();
+
+        this.verticalDraggableGrid.clearAllItems();
+        this.verticalDraggableGrid.setItemsInRow(MathHelper.randomFrom(1, 1));
+        for (let i = 0; i < 10; ++i) {
+            this.verticalDraggableGrid.addItem(new SimpleGridItem(this, `${i}`, 'apple'));
+        }
+        this.verticalDraggableGrid.moveContentToBeginning();
     }
 
 }

@@ -362,19 +362,29 @@ export class DragBox extends Phaser.GameObjects.Container {
         }
     }
 
-    private dragWithWheel(dx: number, dy: number): void {
-        if (this.isDraggableVertically()) {
-            // NOTE: All browsers reporting at least 100 in deltaWheel value
-            const isTrackpad = Math.abs(dy || dx) < 100;
-            this.stopDragForce();
-            this.moveContentBy(
-                (-dy || dx) * (this.config.reverseScrollForTrackpad && isTrackpad ? -1 : 1), 250, Easing.ExpoEaseOut);
+    private dragWithWheel(dx: number, dy: number, wheelEvent: WheelEvent): void {
+        let isTrackpad = false;
+        //@ts-ignore
+        if (wheelEvent.wheelDeltaY) {
+            //@ts-ignore
+            isTrackpad = Math.abs(wheelEvent.wheelDeltaY) !== 120;
+        //@ts-ignore
+        } else if (wheelEvent.wheelDeltaX) {
+            //@ts-ignore
+            isTrackpad = Math.abs(wheelEvent.wheelDeltaX) !== 120;
+        } else if (wheelEvent.deltaMode === 0) {
+            isTrackpad = true;
         }
-        else if (this.isDraggableHorizontally()) {
-            const isTrackpad = Math.abs(dx || dy) < 100;
+        console.log(isTrackpad ? "Trackpad detected" : "Mousewheel detected");
+
+        if (this.isDraggableVertically()) {
             this.stopDragForce();
             this.moveContentBy(
-                (-dx || dy) * (this.config.reverseScrollForTrackpad && isTrackpad ? -1 : 1), 250, Easing.ExpoEaseOut);
+                (dy || dx) * ((this.config.reverseScrollForTrackpad && isTrackpad) ? -1 : 1), 250, Easing.ExpoEaseOut);
+        } else if (this.isDraggableHorizontally()) {
+            this.stopDragForce();
+            this.moveContentBy(
+                (-dx || dy) * ((this.config.reverseScrollForTrackpad && isTrackpad) ? -1 : 1), 250, Easing.ExpoEaseOut);
         }
     }
 
@@ -401,7 +411,7 @@ export class DragBox extends Phaser.GameObjects.Container {
             this.stopDragForce();
         });
         this.content.on('wheel', (pointer: Phaser.Input.Pointer, dx: number, dy: number, dz: number) => {
-            this.dragWithWheel(dx, dy);
+            this.dragWithWheel(dx, dy, pointer.event as WheelEvent);
         });
     }
 
@@ -414,7 +424,7 @@ export class DragBox extends Phaser.GameObjects.Container {
             this.stopDragForce();
         });
         this.draggableSpace.on('wheel', (pointer: Phaser.Input.Pointer, dx: number, dy: number, dz: number) => {
-            this.dragWithWheel(dx, dy);
+            this.dragWithWheel(dx, dy, pointer.event as WheelEvent);
         });
         // TODO: Probably little tweak is needed. We changed drag amounts from items
         this.draggableSpace.on('drag', (pointer: Phaser.Input.Pointer, dragX: number, dragY: number) => {
