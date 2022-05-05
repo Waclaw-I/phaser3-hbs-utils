@@ -16,7 +16,7 @@ export interface DraggableGridConfig {
     itemsInRow: number;
     spacing: number;
     repositionToCenter?: boolean;
-    reverseWheelScroll?: boolean;
+    reverseScrollForTrackpad?: boolean;
     margin?: {
         top?: number;
         bottom?: number;
@@ -49,7 +49,7 @@ export class DraggableGrid extends DragBox {
             height: draggableGridConfig.dimension.y,
             content: grid,
             repositionToCenter: draggableGridConfig.repositionToCenter,
-            reverseWheelScroll: draggableGridConfig.reverseWheelScroll,
+            reverseScrollForTrackpad: draggableGridConfig.reverseScrollForTrackpad,
             horizontal: draggableGridConfig.horizontal,
             margin: draggableGridConfig.margin,
             maskPosition: draggableGridConfig.maskPosition,
@@ -147,6 +147,7 @@ export class DraggableGrid extends DragBox {
     }
 
     private bindGridEventHandlers(): void {
+        console.log('D1');
         this.grid.on(GridEvent.ItemClicked, (item: GridItem) => {
             this.emit(DraggableGridEvent.ItemClicked, item);
         });

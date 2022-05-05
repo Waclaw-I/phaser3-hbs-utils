@@ -87,6 +87,7 @@ export default class HelloWorldScene extends Phaser.Scene {
                 dimension: { x: 400, y: 300 },
                 horizontal: true,
                 repositionToCenter: true,
+                reverseScrollForTrackpad: true,
                 itemsInRow: 1,
                 margin: {
                     left: 250,
@@ -106,8 +107,6 @@ export default class HelloWorldScene extends Phaser.Scene {
         );
 
         this.populateGrid();
-
-        this.add.image(400, 300, 'apple');
 
         this.bindEventHandlers();
     }
