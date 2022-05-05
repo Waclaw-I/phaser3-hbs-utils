@@ -14,6 +14,7 @@ export interface DragBoxConfig {
     height: number;
     content: Phaser.GameObjects.Container;
     horizontal?: boolean;
+    reverseWheelScroll?: boolean;
     repositionToCenter?: boolean;
     maskPosition?: Point;
     margin?: {
@@ -364,11 +365,11 @@ export class DragBox extends Phaser.GameObjects.Container {
     private dragWithWheel(dx: number, dy: number): void {
         if (this.isDraggableVertically()) {
             this.stopDragForce();
-            this.moveContentBy(-dy || dx, 250, Easing.ExpoEaseOut);
+            this.moveContentBy((-dy || dx) * (this.config.reverseWheelScroll ? -1 : 1), 250, Easing.ExpoEaseOut);
         }
         else if (this.isDraggableHorizontally()) {
             this.stopDragForce();
-            this.moveContentBy(-dx || dy, 250, Easing.ExpoEaseOut);
+            this.moveContentBy((-dx || dy) * (this.config.reverseWheelScroll ? -1 : 1), 250, Easing.ExpoEaseOut);
         }
     }
 

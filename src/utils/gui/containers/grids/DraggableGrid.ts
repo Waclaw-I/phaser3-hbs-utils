@@ -16,6 +16,7 @@ export interface DraggableGridConfig {
     itemsInRow: number;
     spacing: number;
     repositionToCenter?: boolean;
+    reverseWheelScroll?: boolean;
     margin?: {
         top?: number;
         bottom?: number;
@@ -48,6 +49,7 @@ export class DraggableGrid extends DragBox {
             height: draggableGridConfig.dimension.y,
             content: grid,
             repositionToCenter: draggableGridConfig.repositionToCenter,
+            reverseWheelScroll: draggableGridConfig.reverseWheelScroll,
             horizontal: draggableGridConfig.horizontal,
             margin: draggableGridConfig.margin,
             maskPosition: draggableGridConfig.maskPosition,
