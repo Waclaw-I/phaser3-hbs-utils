@@ -147,7 +147,6 @@ export class DraggableGrid extends DragBox {
     }
 
     private bindGridEventHandlers(): void {
-        console.log('D1');
         this.grid.on(GridEvent.ItemClicked, (item: GridItem) => {
             this.emit(DraggableGridEvent.ItemClicked, item);
         });
